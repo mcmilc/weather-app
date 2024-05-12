@@ -61,11 +61,52 @@ class WeatherDatabaseAPI:
         finally:
             session.close()
 
-    def insert_historical_weather(
-        self, city_name, date, temperature, precipitation, wind_speed
+    def insert_daily_historical_weather(
+        self,
+        city_name,
+        date,
+        temperature_max,
+        temperature_min,
+        temperature_avg,
+        precipitation_sum,
+        wind_speed_max,
     ):
         """Insert a historical weather entry into the database using a SQL file."""
-        query = load_query("api/queries/insert_historical_weather.sql")
+        query = load_query("api/queries/insert_daily_historical_weather.sql")
+        session = self.db.get_session()
+        city_id = self.get_city_data(city_name)[0]
+        try:
+            session.execute(
+                query,
+                {
+                    "city_id": city_id,
+                    "date": date,
+                    "temperature_min": temperature_min,
+                    "temperature_max": temperature_max,
+                    "temperature_avg": temperature_avg,
+                    "precipitation_sum": precipitation_sum,
+                    "wind_speed_max": wind_speed_max,
+                },
+            )
+            session.commit()
+        except Exception as e:
+            if "UniqueViolation" not in str(e):
+                print(f"Error inserting city: {city_name}")
+                print(e)
+        finally:
+            session.close()
+
+    def insert_hourly_historical_weather(
+        self,
+        city_name,
+        date,
+        temperature,
+        precipitation,
+        humidity,
+        wind_speed_10m,
+    ):
+        """Insert a historical weather entry into the database using a SQL file."""
+        query = load_query("api/queries/insert_hourly_historical_weather.sql")
         session = self.db.get_session()
         city_id = self.get_city_data(city_name)[0]
         try:
@@ -75,8 +116,9 @@ class WeatherDatabaseAPI:
                     "city_id": city_id,
                     "date": date,
                     "temperature": temperature,
+                    "humidity": humidity,
                     "precipitation": precipitation,
-                    "wind_speed": wind_speed,
+                    "wind_speed_10m": wind_speed_10m,
                 },
             )
             session.commit()
