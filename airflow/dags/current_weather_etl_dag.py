@@ -4,7 +4,7 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 from api.database_api import WeatherDatabaseAPI
 from api.open_meteo_api import OpenMeteoAPI
-from config.settings import load_json
+from config.settings import load_cities
 
 default_args = {
     "owner": "your_name",
@@ -21,7 +21,7 @@ dag = DAG(
     schedule_interval="@hourly",
 )
 
-cities = load_json("config/cities.json")["cities"]
+cities = load_cities()
 db_api = WeatherDatabaseAPI(db_type="postgresql")
 
 
@@ -38,11 +38,10 @@ def transform_and_load_current_weather(**kwargs):
         weather_data = extract_current_weather_for_city(city)
         # Implement transformation logic here to align with the database schema
         transformed_data = transform_current_weather(
-            city_name=city, weather_data=weather_data
+            city_name=city["name"], weather_data=weather_data
         )
 
-        for entry in transformed_data:
-            db_api.insert_current_weather(**entry)
+        db_api.insert_current_weather(**transformed_data)
 
 
 def transform_current_weather(city_name, weather_data):
@@ -56,8 +55,8 @@ def transform_current_weather(city_name, weather_data):
     Returns:
         dict: Transformed data for the `current_weather` table.
     """
-    current_weather = weather_data["Current Weather"]
-
+    current_weather = weather_data["data"]["current"]
+    print(current_weather)
     # Extract and convert the fields
     timestamp_str = current_weather["time"]
     timestamp = datetime.fromisoformat(timestamp_str)
@@ -68,7 +67,7 @@ def transform_current_weather(city_name, weather_data):
     humidity = current_weather["relative_humidity_2m"]
     # Return the transformed data
     return {
-        "name": city_name,
+        "city_name": city_name,
         "timestamp": timestamp,
         "temperature": temperature,
         "precipitation": precipitation,  # Assuming no data available in this API

@@ -3,7 +3,7 @@ from airflow.operators.python import PythonOperator
 from datetime import datetime, timedelta
 from api.open_meteo_api import OpenMeteoAPI
 from api.database_api import WeatherDatabaseAPI
-from config.settings import load_json
+from config.settings import load_cities
 
 default_args = {
     "owner": "your_name",
@@ -20,7 +20,7 @@ dag = DAG(
     schedule_interval="@daily",
 )
 
-cities = load_json("config/cities.json")["cities"]
+cities = load_cities()
 db_api = WeatherDatabaseAPI(db_type="postgresql")
 
 
@@ -37,7 +37,7 @@ def transform_and_load_forecasted_weather(**kwargs):
         weather_data = extract_forecasted_weather_for_city(city)
         # Implement transformation logic here to align with the database schema
         transformed_data = transform_forecasted_weather(
-            city_name=city, weather_data=weather_data
+            city_name=city["name"], weather_data=weather_data
         )  # Replace with your transformation code
 
         for entry in transformed_data:
@@ -55,22 +55,27 @@ def transform_forecasted_weather(city_name, weather_data):
     Returns:
         dict: Transformed data for the `current_weather` table.
     """
-    forecasted_weather = weather_data["Forecasted Weather"]["daily"]
+    forecasted_weather = weather_data["data"]["daily"]
 
     # Extract and convert the fields
-    timestamp_str = forecasted_weather["time"]
-    timestamp = datetime.fromisoformat(timestamp_str)
+    timestamps_list = forecasted_weather["time"]
+    timestamps = [datetime.fromisoformat(t) for t in timestamps_list]
+    temperatures = forecasted_weather["temperature_2m_max"]
+    wind_speeds = forecasted_weather["wind_speed_10m_max"]
+    precipitations = forecasted_weather["precipitation_sum"]
 
-    temperature = forecasted_weather["temperature_2m_max"]
-    wind_speed = forecasted_weather["wind_speed_10m_max"]
-    precipitation = forecasted_weather["precipitation_sum"]
-    return {
-        "name": city_name,
-        "timestamp": timestamp,
-        "temperature": temperature,
-        "precipitation": precipitation,
-        "wind_speed": wind_speed,
-    }
+    entries = []
+    for ts, tm, ws, pc in zip(timestamps, temperatures, wind_speeds, precipitations):
+        entries.append(
+            {
+                "city_name": city_name,
+                "date": ts,
+                "temperature": tm,
+                "precipitation": pc,
+                "wind_speed": ws,
+            }
+        )
+    return entries
 
 
 load_forecasted_task = PythonOperator(

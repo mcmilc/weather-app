@@ -1,9 +1,5 @@
 import pycurl
-from io import BytesIO
-from urllib.parse import urlencode
-
-
-import pycurl
+import json
 from io import BytesIO
 from urllib.parse import urlencode
 
@@ -34,7 +30,8 @@ class OpenMeteoAPI:
         curl.setopt(curl.WRITEFUNCTION, buffer.write)
         curl.perform()
         curl.close()
-        return buffer.getvalue().decode("utf-8")
+        data = buffer.getvalue().decode("utf-8")
+        return json.loads(data)
 
     def get_current_weather(self):
         """Get current weather data."""
@@ -79,11 +76,11 @@ if __name__ == "__main__":
     print("Current Weather:", current_weather)
 
     # Historical Weather
-    historical_weather = api.get_historical_weather(
-        start_date="2024-01-01", end_date="2024-01-31"
-    )
-    print("Historical Weather:", historical_weather)
+    # historical_weather = api.get_historical_weather(
+    #    start_date="2024-01-01", end_date="2024-01-31"
+    # )
+    # print("Historical Weather:", historical_weather)
 
     # Forecasted Weather
-    forecasted_weather = api.get_forecasted_weather(daily=True)
-    print("Forecasted Weather:", forecasted_weather)
+    # forecasted_weather = api.get_forecasted_weather(daily=True)
+    # print("Forecasted Weather:", forecasted_weather)

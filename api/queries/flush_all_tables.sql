@@ -1,4 +1,10 @@
 DELETE FROM
+    public.city;
+
+DELETE FROM
+    public.city_type;
+
+DELETE FROM
     public.forecasted_weather;
 
 DELETE FROM

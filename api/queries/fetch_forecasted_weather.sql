@@ -1,10 +1,9 @@
 SELECT
     weather_id,
     city_id,
-    forecast_date,
+    date,
     temperature,
     precipitation,
-    humidity,
     wind_speed,
 FROM
     public.forecasted_weather

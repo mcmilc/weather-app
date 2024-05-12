@@ -2,7 +2,8 @@ BEGIN;
 
 CREATE TABLE IF NOT EXISTS PUBLIC.city_type (
     city_type_id SERIAL PRIMARY KEY,
-    name VARCHAR(50) NOT NULL
+    city_type VARCHAR(50) NOT NULL,
+    UNIQUE (city_type) -- Unique constraint for city type
 );
 
 CREATE TABLE IF NOT EXISTS PUBLIC.city (
@@ -11,7 +12,7 @@ CREATE TABLE IF NOT EXISTS PUBLIC.city (
     latitude FLOAT NOT NULL,
     longitude FLOAT NOT NULL,
     city_type_id INTEGER REFERENCES city_type(city_type_id),
-    UNIQUE (name, latitude, longitude)  -- Unique constraint for city details
+    UNIQUE (name, latitude, longitude) -- Unique constraint for city name, latitude, and longitude
 );
 
 CREATE TABLE IF NOT EXISTS PUBLIC.historical_weather (
@@ -20,9 +21,8 @@ CREATE TABLE IF NOT EXISTS PUBLIC.historical_weather (
     date DATE NOT NULL,
     temperature FLOAT,
     precipitation FLOAT,
-    humidity FLOAT,
     wind_speed FLOAT,
-    UNIQUE (city_id, date)  -- Unique constraint for city and date
+    UNIQUE (city_id, date) -- Unique constraint for city and date
 );
 
 CREATE TABLE IF NOT EXISTS PUBLIC.current_weather (
@@ -33,18 +33,17 @@ CREATE TABLE IF NOT EXISTS PUBLIC.current_weather (
     precipitation FLOAT,
     humidity FLOAT,
     wind_speed FLOAT,
-    UNIQUE (city_id, timestamp)  -- Unique constraint for city and timestamp
+    UNIQUE (city_id, timestamp) -- Unique constraint for city and timestamp
 );
 
 CREATE TABLE IF NOT EXISTS PUBLIC.forecasted_weather (
     weather_id SERIAL PRIMARY KEY,
     city_id INTEGER REFERENCES city(city_id),
-    forecast_date DATE NOT NULL,
+    date DATE NOT NULL,
     temperature FLOAT,
     precipitation FLOAT,
-    humidity FLOAT,
     wind_speed FLOAT,
-    UNIQUE (city_id, forecast_date)  -- Unique constraint for city and forecast date
+    UNIQUE (city_id, date) -- Unique constraint for city and forecast date
 );
 
 COMMIT;
