@@ -8,7 +8,10 @@ DELETE FROM
     public.forecasted_weather;
 
 DELETE FROM
-    public.historical_weather;
+    public.historical_weather_daily;
+
+DELETE FROM
+    public.historical_weather_hourly;
 
 DELETE FROM
     public.current_weather;

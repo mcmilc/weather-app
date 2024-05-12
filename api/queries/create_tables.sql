@@ -34,8 +34,8 @@ CREATE TABLE IF NOT EXISTS PUBLIC.historical_weather_hourly (
     temperature FLOAT,
     precipitation FLOAT,
     humidity FLOAT,
-    wind_speed FLOAT,
-    UNIQUE (city_id, datetime)
+    wind_speed_10m FLOAT,
+    UNIQUE (city_id, timestamp)
 );
 
 CREATE TABLE IF NOT EXISTS PUBLIC.current_weather (
@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS PUBLIC.forecasted_weather_daily (
     date DATE NOT NULL,
     temperature FLOAT,
     precipitation FLOAT,
-    wind_speed FLOAT,
+    wind_speed_10m FLOAT,
     UNIQUE (city_id, date) -- Unique constraint for city and forecast date
 );
 

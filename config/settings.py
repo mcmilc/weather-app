@@ -7,7 +7,7 @@ project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../"))
 
 def load_json(file_path):
     """Load JSON data from a given file path."""
-    with open(file_path, "rb") as json_file:
+    with open(file_path, "r") as json_file:
         return json.load(json_file)
 
 
@@ -31,6 +31,6 @@ def load_query(file_path):
         return sql_file.read()
 
 
-def load_date_range():
+def load_weather_format():
     """Load the date range for historical weather extraction."""
-    return load_json(os.path.join(project_root, "config/historical_weather_dates.json"))
+    return load_json(os.path.join(project_root, "config/weather_format_config.json"))
