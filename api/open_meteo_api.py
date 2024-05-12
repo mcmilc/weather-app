@@ -42,14 +42,17 @@ class OpenMeteoAPI:
         }
         return self._fetch_data("forecast", params, "current")
 
-    def get_historical_weather(self, start_date, end_date):
+    def get_historical_weather(self, start_date, end_date, daily=False):
         """Get historical weather data for a given date range."""
         params = {
             "latitude": self.latitude,
             "longitude": self.longitude,
             "start_date": start_date,
             "end_date": end_date,
-            "daily": "temperature_2m_max,temperature_2m_min,precipitation_sum,wind_speed_10m_max",
+            "daily": "temperature_2m_max,temperature_2m_min,precipitation_sum,wind_speed_10m_max"
+            if daily
+            else "",
+            "hourly": "temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m",
         }
         return self._fetch_data("archive", params, "historical")
 

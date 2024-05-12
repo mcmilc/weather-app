@@ -4,6 +4,7 @@ INSERT INTO
         date,
         temperature,
         precipitation,
+        humidity,
         wind_speed
     )
 VALUES
@@ -12,5 +13,6 @@ VALUES
         :date,
         :temperature,
         :precipitation,
+        :humidity,
         :wind_speed
     );

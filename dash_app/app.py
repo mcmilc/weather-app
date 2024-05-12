@@ -15,6 +15,7 @@ weather_api = WeatherDatabaseAPI()
 
 
 def fetch_current_weather(city):
+    """Fetch the current weather data for a given city."""
     city_data = weather_api.fetch_current_weather(city)
     return {
         "city": city,

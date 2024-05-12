@@ -4,6 +4,7 @@ SELECT
     date,
     temperature,
     precipitation,
+    humidity,
     wind_speed
 FROM
     public.historical_weather
