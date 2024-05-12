@@ -176,6 +176,82 @@ class WeatherDatabaseAPI:
             finally:
                 session.close()
 
+    def fetch_current_weather(self, city_name):
+        """Fetch current weather for a given city."""
+        query = load_query("api/queries/fetch_current_weather.sql")
+        session = self.db.get_session()
+        city_id = self.get_city_data(city_name)[0]
+        try:
+            result = session.execute(query, {"city_id": city_id}).fetchone()
+            return result
+        finally:
+            session.close()
+
+    def fetch_forecasted_weather(self, city_name):
+        """Fetch forecasted weather for a given city."""
+        query = load_query("api/queries/fetch_forecasted_weather.sql")
+        session = self.db.get_session()
+        city_id = self.get_city_data(city_name)[0]
+        try:
+            result = session.execute(query, {"city_id": city_id}).fetchall()
+            return result
+        finally:
+            session.close()
+
+    def fetch_historical_temperatures(self, city_name, start_date, end_date):
+        """Fetch historical temperatures for a given city."""
+        query = load_query("api/queries/fetch_historical_weather.sql")
+        session = self.db.get_session()
+        city_id = self.get_city_data(city_name)[0]
+        try:
+            result = session.execute(
+                query,
+                {
+                    "city_id": city_id,
+                    "start_date": start_date,
+                    "end_date": end_date,
+                },
+            ).fetchall()
+            return result
+        finally:
+            session.close()
+
+    def fetch_average_temperatures(self, city_name, start_date, end_date):
+        """Fetch average temperatures for a given city."""
+        query = load_query("api/queries/fetch_average_temperature.sql")
+        session = self.db.get_session()
+        city_id = self.get_city_data(city_name)[0]
+        try:
+            result = session.execute(
+                query,
+                {
+                    "city_id": city_id,
+                    "start_date": start_date,
+                    "end_date": end_date,
+                },
+            ).fetchall()
+            return result
+        finally:
+            session.close()
+
+    def fetch_average_wind_speeds(self, city_name, start_date, end_date):
+        """Fetch average wind speeds for a given city."""
+        query = load_query("api/queries/fetch_average_wind_speed.sql")
+        session = self.db.get_session()
+        city_id = self.get_city_data(city_name)[0]
+        try:
+            result = session.execute(
+                query,
+                {
+                    "city_id": city_id,
+                    "start_date": start_date,
+                    "end_date": end_date,
+                },
+            ).fetchall()
+            return result
+        finally:
+            session.close()
+
 
 if __name__ == "__main__":
     api = WeatherDatabaseAPI()
