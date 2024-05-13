@@ -1,5 +1,5 @@
 INSERT INTO
-    public.daily_historical_weather (
+    public.historical_weather_daily (
         city_id,
         date,
         temperature_min,

@@ -79,10 +79,10 @@ if __name__ == "__main__":
     print("Current Weather:", current_weather)
 
     # Historical Weather
-    # historical_weather = api.get_historical_weather(
-    #    start_date="2024-01-01", end_date="2024-01-31"
-    # )
-    # print("Historical Weather:", historical_weather)
+    historical_weather = api.get_historical_weather(
+        start_date="2024-01-01", end_date="2024-01-31"
+    )
+    print("Historical Weather:", historical_weather)
 
     # Forecasted Weather
     # forecasted_weather = api.get_forecasted_weather(daily=True)

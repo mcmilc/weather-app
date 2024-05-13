@@ -40,9 +40,9 @@ def transform_and_load_historical_weather(**kwargs):
     start_date = weather_format["start_date"]
     end_date = weather_format["end_date"]
     if end_date == "today":
-        end_date = datetime.now().isoformat()
+        end_date = datetime.now().date().isoformat()
     daily = False
-    frequency = weather_format["frequency"]
+    frequency = weather_format["data_frequency"]
     if frequency == "daily":
         daily = True
 
@@ -124,7 +124,7 @@ def transform_historical_weather(city_name, weather_data, daily):
             entries.append(
                 {
                     "city_name": city_name,
-                    "date": ts,
+                    "timestamp": ts,
                     "temperature": tmp,
                     "precipitation": pc,
                     "wind_speed_10m": ws,

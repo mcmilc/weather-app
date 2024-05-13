@@ -99,7 +99,7 @@ class WeatherDatabaseAPI:
     def insert_hourly_historical_weather(
         self,
         city_name,
-        date,
+        timestamp,
         temperature,
         precipitation,
         humidity,
@@ -114,7 +114,7 @@ class WeatherDatabaseAPI:
                 query,
                 {
                     "city_id": city_id,
-                    "date": date,
+                    "timestamp": timestamp,
                     "temperature": temperature,
                     "humidity": humidity,
                     "precipitation": precipitation,
