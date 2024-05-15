@@ -4,7 +4,7 @@ SELECT
     date,
     temperature,
     precipitation,
-    wind_speed
+    wind_speed_10m
 FROM
     public.forecasted_weather_daily
 WHERE
