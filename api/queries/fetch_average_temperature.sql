@@ -1,13 +1,13 @@
 SELECT
-    date,
-    AVG(temperature) as avg_temperature
+    DATE(timestamp) AS date,
+    ROUND(AVG(temperature) :: numeric, 1) AS avg_temperature
 FROM
-    public.historical_weather
+    PUBLIC.historical_weather_hourly
 WHERE
-    city_id = :city_id
-    AND date BETWEEN :start_date
+    timestamp BETWEEN :start_date
     AND :end_date
+    AND city_id = :city_id
 GROUP BY
-    date
+    DATE(timestamp)
 ORDER BY
-    date;
+    DATE(timestamp);

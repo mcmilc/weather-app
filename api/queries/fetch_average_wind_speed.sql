@@ -1,13 +1,13 @@
 SELECT
-    date,
-    AVG(wind_speed) as avg_wind_speed
+    DATE(timestamp) AS date,
+    ROUND(AVG(wind_speed_10m) :: numeric, 1) AS avg_wind_speed
 FROM
-    public.historical_weather
+    PUBLIC.historical_weather_hourly
 WHERE
-    city_id = :city_id
-    AND date BETWEEN :start_date
+    timestamp BETWEEN :start_date
     AND :end_date
+    AND city_id = :city_id
 GROUP BY
-    date
+    DATE(timestamp)
 ORDER BY
-    date;
+    DATE(timestamp);

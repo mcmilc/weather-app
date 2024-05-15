@@ -243,7 +243,7 @@ class WeatherDatabaseAPI:
 
     def fetch_forecasted_weather(self, city_name):
         """Fetch forecasted weather for a given city."""
-        query = load_query("api/queries/fetch_forecasted_weather.sql")
+        query = load_query("api/queries/fetch_daily_forecasted_weather.sql")
         session = self.db.get_session()
         city_id = self.get_city_data(city_name)[0]
         try:
@@ -254,7 +254,7 @@ class WeatherDatabaseAPI:
 
     def fetch_historical_temperatures(self, city_name, start_date, end_date):
         """Fetch historical temperatures for a given city."""
-        query = load_query("api/queries/fetch_historical_weather.sql")
+        query = load_query("api/queries/fetch_hourly_historical_weather.sql")
         session = self.db.get_session()
         city_id = self.get_city_data(city_name)[0]
         try:

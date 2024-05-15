@@ -105,7 +105,7 @@ def generate_forecast_cards(forecast_data):
                     html.H4(f"Date: {day[1]['date']}"),
                     html.P(f"Temp: {day[1]['temperature']} °C"),
                     html.P(f"Precipitation: {day[1]['precipitation']} mm"),
-                    html.P(f"Wind: {day[1]['wind_speed']} km/h"),
+                    html.P(f"Wind: {day[1]['wind_speed_10m']} km/h"),
                 ]
             )
             for day in forecast_data.iterrows()
@@ -129,8 +129,8 @@ app.layout = html.Div(
         html.Div(id="temperature-graph"),
         html.Div(id="wind-speed-graph"),
         html.Div(id="forecast-display"),
-        dcc.Input(id="start-year", type="number", value=2013),
-        dcc.Input(id="end-year", type="number", value=2014),
+        dcc.Input(id="start-year", type="number", value=2010),
+        dcc.Input(id="end-year", type="number", value=2011),
     ]
 )
 
