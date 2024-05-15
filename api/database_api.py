@@ -168,7 +168,7 @@ class WeatherDatabaseAPI:
         self, city_name, date, temperature, precipitation, wind_speed
     ):
         """Insert a forecasted weather entry into the database using an SQL file."""
-        query = load_query("api/queries/insert_forecasted_weather.sql")
+        query = load_query("api/queries/insert_daily_forecasted_weather.sql")
         session = self.db.get_session()
         city_id = self.get_city_data(city_name)[0]
         try:
@@ -179,7 +179,7 @@ class WeatherDatabaseAPI:
                     "date": date,
                     "temperature": temperature,
                     "precipitation": precipitation,
-                    "wind_speed": wind_speed,
+                    "wind_speed_10m": wind_speed,
                 },
             )
             session.commit()
