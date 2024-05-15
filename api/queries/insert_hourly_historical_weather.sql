@@ -10,7 +10,7 @@ INSERT INTO
 VALUES
     (
         :city_id,
-        :timestamp,
+        :timestamp AT TIME ZONE 'UTC',
         :temperature,
         :precipitation,
         :humidity,

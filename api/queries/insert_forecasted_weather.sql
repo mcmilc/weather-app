@@ -1,5 +1,5 @@
 INSERT INTO
-    public.forecasted_weather (
+    public.forecasted_weather_daily (
         city_id,
         date,
         temperature,

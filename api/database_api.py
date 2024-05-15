@@ -129,6 +129,18 @@ class WeatherDatabaseAPI:
         finally:
             session.close()
 
+    def data_quality_check_historical_weather_hourly(self):
+        """Check the data quality of the hourly historical weather data."""
+        query = load_query(
+            "api/queries/check_historical_weather_hourly_time_inteval.sql"
+        )
+        session = self.db.get_session()
+        try:
+            result = session.execute(query).fetchall()
+            return result
+        finally:
+            session.close()
+
     def insert_current_weather(
         self, city_name, timestamp, temperature, precipitation, humidity, wind_speed
     ):

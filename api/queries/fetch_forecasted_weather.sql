@@ -6,6 +6,6 @@ SELECT
     precipitation,
     wind_speed
 FROM
-    public.forecasted_weather
+    public.forecasted_weather_daily
 WHERE
     city_id = :city_id;
