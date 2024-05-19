@@ -1,0 +1,48 @@
+version: '3'
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dash-setup
+    ports:
+      - "8050:8050"
+    depends_on:
+      - db
+    command: >
+      /bin/bash -c "
+      start_dash_app.sh
+      "
+  db:
+    image: postgres:16.1
+    environment:
+      POSTGRES_DB: weather_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: IlPostgreSQL48!
+  airflow:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: airflow-setup
+    ports:
+      - "8080:8080"
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__CORE__DAGS_FOLDER=/app/airflow/dags
+    depends_on:
+      - db
+    volumes:
+      - ./airflow/dags:/app/airflow/dags
+    command: >
+      /bin/bash -c "
+      airflow db init &&
+      airflow webserver
+      "
+  scheduler:
+    image: apache/airflow:2.7.3
+    depends_on:
+      - airflow
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__CORE__DAGS_FOLDER=/app/airflow/dags
+    command: scheduler
