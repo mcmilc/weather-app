@@ -1,48 +1,71 @@
-version: '3'
+version: '3.8'
 services:
-  web:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: dash-setup
-    ports:
-      - "8050:8050"
-    depends_on:
-      - db
-    command: >
-      /bin/bash -c "
-      start_dash_app.sh
-      "
-  db:
+  app_db:
     image: postgres:16.1
     environment:
       POSTGRES_DB: weather_db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: IlPostgreSQL48!
+    volumes:
+      - app-db-volume:/var/lib/postgresql/data
+    ports:
+      - "5434:5432"
+
+  airflow_db:
+    image: postgres:16.1
+    environment:
+      POSTGRES_DB: airflow_db
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflowpassword
+    volumes:
+      - airflow-db-volume:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+
+  # web:
+  #   build: .
+  #   ports:
+  #     - "8050:8050"
+  #   depends_on:
+  #     - app_db
+
   airflow:
     build:
       context: .
       dockerfile: Dockerfile
-      target: airflow-setup
-    ports:
-      - "8080:8080"
+    image: apache/airflow:2.7.3
     environment:
-      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
-      - AIRFLOW__CORE__DAGS_FOLDER=/app/airflow/dags
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflowpassword@airflow_db:5432/airflow_db
+      - AIRFLOW__DATABASE__EXECUTOR=LocalExecutor
+      - AIRFLOW__LOGGING__BASE_LOG_FOLDER=/opt/airflow/logs
+      - AIRFLOW_HOME=/opt/airflow
     depends_on:
-      - db
-    volumes:
-      - ./airflow/dags:/app/airflow/dags
-    command: >
-      /bin/bash -c "
-      airflow db init &&
-      airflow webserver
-      "
+      - airflow_db
+    user: "${UID}:${GID}"
+    #volumes:
+    #  - ./airflow/dags:/opt/airflow/dags
+    #  - ./logs:/opt/airflow/logs
+      #- .:/app
+    ports:
+      - "8080:8080"   
+    entrypoint: ["/app/entrypoint.sh"]
+    command: [ "airflow", "webserver" ]
+
   scheduler:
     image: apache/airflow:2.7.3
     depends_on:
       - airflow
+    user: "${UID}:${GID}"
     environment:
-      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
-      - AIRFLOW__CORE__DAGS_FOLDER=/app/airflow/dags
-    command: scheduler
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflowpassword@airflow_db:5432/airflow_db
+      - AIRFLOW__DATABASE__EXECUTOR=LocalExecutor
+      - AIRFLOW__LOGGING__BASE_LOG_FOLDER=/opt/airflow/logs
+      - AIRFLOW_HOME=/opt/airflow
+    #volumes:
+    #  - ./airflow/dags:/opt/airflow/dags
+    #  - ./logs:/opt/airflow/logs
+    command: [ "airflow", "scheduler" ]
+
+volumes:
+  airflow-db-volume:
+  app-db-volume:

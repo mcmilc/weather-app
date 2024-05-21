@@ -1,9 +1,6 @@
 #!/bin/sh
-# Navigate to the api directory
-cd /app
-# Build the package
-python setup.py sdist bdist_wheel
+python /app/setup.py sdist bdist_wheel
 # Install the package
-pip install dist/*.whl
+pip install /app/dist/*.whl --force-reinstall
 # Clean up build artifacts
-rm -rf build dist *.egg-info
+rm -rf build /app/dist /app/*.egg-info

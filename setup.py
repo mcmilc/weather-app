@@ -11,7 +11,7 @@ setup(
         "config": ["*.json"],
     },
     install_requires=[],  # Add any dependencies if needed
-    author="MC MilC",
-    author_email="your.email@example.com",
+    author="MC Milc",
+    author_email="mcmilc@mail.com",
     description="Project description",
 )
