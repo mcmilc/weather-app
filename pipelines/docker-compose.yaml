@@ -1,0 +1,45 @@
+version: '3.8'
+services:
+  airflow_db:
+    image: postgres:16.1
+    environment:
+      POSTGRES_DB: airflow_db
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflowpassword
+    volumes:
+      - airflow-db-volume:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+
+  airflow:
+    build:
+      context: ..
+      dockerfile: pipelines/Dockerfile
+    image: apache/airflow:2.7.3
+    environment:
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflowpassword@airflow_db:5432/airflow_db
+      - AIRFLOW__DATABASE__EXECUTOR=LocalExecutor
+      - AIRFLOW__LOGGING__BASE_LOG_FOLDER=/opt/airflow/logs
+      - AIRFLOW_HOME=/opt/airflow
+    depends_on:
+      - airflow_db
+    user: "${UID}:${GID}"
+    ports:
+      - "8080:8080"   
+    entrypoint: ["/app/entrypoint.sh"]
+    command: [ "airflow", "webserver" ]
+
+  scheduler:
+    image: apache/airflow:2.7.3
+    depends_on:
+      - airflow
+    user: "${UID}:${GID}"
+    environment:
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflowpassword@airflow_db:5432/airflow_db
+      - AIRFLOW__DATABASE__EXECUTOR=LocalExecutor
+      - AIRFLOW__LOGGING__BASE_LOG_FOLDER=/opt/airflow/logs
+      - AIRFLOW_HOME=/opt/airflow
+    command: [ "airflow", "scheduler" ]
+
+volumes:
+  airflow-db-volume:

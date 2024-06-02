@@ -2,7 +2,7 @@ import os
 import json
 
 
-project_root = os.path.abspath((os.path.dirname(__file__)))
+project_root = os.path.abspath(os.path.join((os.path.dirname(__file__)), "../"))
 
 
 def load_json(file_path):
@@ -13,13 +13,13 @@ def load_json(file_path):
 
 def load_cities():
     """Load city data from a JSON file."""
-    return load_json(os.path.join(project_root, "cities.json"))["cities"]
+    return load_json(os.path.join(project_root, "config", "cities.json"))["cities"]
 
 
 def load_db_config(db_type="postgresql"):
     """Load database configuration from a JSON file
     based on the selected type (PostgreSQL/MySQL)."""
-    config = load_json(os.path.join(project_root, "db_config.json"))
+    config = load_json(os.path.join(project_root, "config", "db_config.json"))
     if db_type not in config:
         raise ValueError(f"Unsupported database type: {db_type}")
     return config[db_type]
@@ -33,4 +33,4 @@ def load_query(file_path):
 
 def load_weather_format():
     """Load the date range for historical weather extraction."""
-    return load_json(os.path.join(project_root, "weather_format_config.json"))
+    return load_json(os.path.join(project_root, "config", "weather_format_config.json"))

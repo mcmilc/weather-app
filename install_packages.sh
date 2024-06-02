@@ -1,6 +1,6 @@
 #!/bin/sh
-python /app/setup.py sdist bdist_wheel
+python3 /app/share/setup.py sdist bdist_wheel
 # Install the package
-pip install /app/dist/*.whl --force-reinstall
+pip3 install /app/share/dist/*.whl --force-reinstall
 # Clean up build artifacts
-rm -rf build /app/dist /app/*.egg-info
+rm -rf /app/share/build /app/share/dist /app/share/*.egg-info
